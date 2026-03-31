@@ -15,6 +15,7 @@ outputs/
   YYYY-MM-DD/   # Date-organized markdown outputs
   raw/           # Raw markdown records of chat threads (for PDF generation)
   pdf/           # Generated PDFs
+tables/          # CSV data tables generated from research
 templates/
   notebook.typ  # Typst template for PDF generation
 ```
@@ -58,6 +59,36 @@ List all pending prompts in `prompts/to-run/` with their filenames and a brief p
 ### `/list-outputs`
 
 List all saved outputs organized by date.
+
+### `/generate-table`
+
+Generate a structured data table from research, saved as both CSV and markdown. Useful for model comparisons, tool evaluations, feature matrices, etc.
+
+**Usage:**
+```
+/generate-table <topic or description>
+```
+
+**Examples:**
+```
+/generate-table STT models with streaming support and AMD GPU compatibility
+/generate-table LLM providers pricing comparison
+/generate-table video editing tools for Linux
+```
+
+**Process:**
+
+1. **Research** the topic — use prior outputs, web search, and existing knowledge
+2. **Design columns** appropriate to the topic. Always include at minimum: Name, Manufacturer/Provider, Description. Add domain-specific columns (e.g., for ML models: Parameters, Architecture, License; for SaaS: Pricing, API Type)
+3. **Write CSV** to `tables/<slug>.csv` — this is the canonical data file
+4. **Write markdown output** to `outputs/YYYY-MM-DD/HHMMSS-<slug>.md` with the table rendered in markdown and the CSV cross-linked via `**Data file**: [[<slug>.csv|tables/<slug>.csv]]`
+5. **Save prompt** and **commit + push** as usual
+
+**Conventions:**
+- CSV uses standard RFC 4180 format (quote fields containing commas)
+- Boolean columns use `Yes` / `No` / `Partial` (not checkmarks — keeps CSV clean)
+- Unknown values use `Unknown` or `N/A`, never blank
+- If a table updates a previous one on the same topic, overwrite the CSV and note the update in the output
 
 ### `/generate-pdf`
 

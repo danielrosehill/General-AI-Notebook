@@ -1,0 +1,1 @@
+I would really love to get a table on which models support real-time, streaming, the inference engine, AMD GPU support, params, manufacturer, description. Let's add a slash command for generating data tables also.

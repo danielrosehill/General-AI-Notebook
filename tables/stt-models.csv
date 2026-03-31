@@ -1,0 +1,40 @@
+Model,Manufacturer,Type,Description,Architecture,Real-Time,Streaming API,Batch/File,Parameters,Inference Engine (AMD GPU),AMD ROCm Support,Languages,License
+Whisper tiny,OpenAI,Open Source,Smallest Whisper variant — fast but lower accuracy,Encoder-decoder Transformer,No,No (chunking workaround),Yes,39M,PyTorch ROCm / whisper.cpp (hipBLAS),Yes,99,MIT
+Whisper base,OpenAI,Open Source,Baseline Whisper — good speed/accuracy tradeoff,Encoder-decoder Transformer,No,No (chunking workaround),Yes,74M,PyTorch ROCm / whisper.cpp (hipBLAS),Yes,99,MIT
+Whisper small,OpenAI,Open Source,Mid-range Whisper — solid general-purpose,Encoder-decoder Transformer,No,No (chunking workaround),Yes,244M,PyTorch ROCm / whisper.cpp (hipBLAS),Yes,99,MIT
+Whisper medium,OpenAI,Open Source,Larger Whisper — good multilingual accuracy,Encoder-decoder Transformer,No,No (chunking workaround),Yes,769M,PyTorch ROCm / whisper.cpp (hipBLAS),Yes,99,MIT
+Whisper large-v3,OpenAI,Open Source,Best accuracy Whisper — slow but highest quality,Encoder-decoder Transformer,No,No (chunking workaround),Yes,1550M,PyTorch ROCm / whisper.cpp (hipBLAS),Yes,99,MIT
+Whisper large-v3-turbo,OpenAI,Open Source,Distilled large-v3 — near-large accuracy at much faster speed,Encoder-decoder Transformer,No,No (chunking workaround),Yes,809M,PyTorch ROCm / whisper.cpp (hipBLAS),Yes,99,MIT
+Faster-Whisper (large-v3),Systran / Community,Open Source,CTranslate2-optimized Whisper — 4-8x faster than vanilla,CTranslate2 encoder-decoder,No,Simulated (VAD chunking),Yes,1550M,CTranslate2 (ROCm partial),Partial — ROCm builds exist but RDNA3 can be finicky,99,MIT
+Distil-Whisper large-v3,HuggingFace,Open Source,Distilled Whisper — 6x faster and 49% smaller,Distilled encoder-decoder,No,No (chunking workaround),Yes,756M,PyTorch ROCm,Yes,English + multilingual,MIT
+Moonshine tiny,Useful Sensors,Open Source,Ultra-lightweight real-time STT — designed for edge/on-device,Encoder-decoder (streaming-optimized),Yes,Yes (native),Yes,27M,ONNX Runtime ROCm / PyTorch ROCm,Yes,English,MIT
+Moonshine base,Useful Sensors,Open Source,Larger Moonshine variant — better accuracy still fast,Encoder-decoder (streaming-optimized),Yes,Yes (native),Yes,61M,ONNX Runtime ROCm / PyTorch ROCm,Yes,English,MIT
+Silero STT,Silero AI,Open Source,Extremely lightweight CTC models — great for streaming,Custom CTC,Yes,Yes (native),Yes,~18M,ONNX Runtime ROCm,Yes,"English, German, Spanish, Ukrainian",MIT
+Vosk (various),Alpha Cephei,Open Source,Kaldi-based offline STT — true streaming with small models,Kaldi HMM/CTC,Yes,Yes (native),Yes,Varies (50M–1.8G),CPU only (Kaldi),No (CPU inference),20+,Apache 2.0
+DeepSpeech,Mozilla,Open Source,Legacy CTC+RNN streaming STT — deprecated but functional,CTC + RNN,Yes,Yes (native),Yes,~47M,CPU / TensorFlow (no ROCm),No (deprecated),English (community others),MPL 2.0
+NVIDIA Conformer-Transducer,NVIDIA (NeMo),Open Source,State-of-the-art streaming ASR — excellent WER,Conformer-Transducer (RNNT),Yes,Yes (native),Yes,~120M,PyTorch ROCm (NeMo),Yes — some custom CUDA kernels may need patching,English + multilingual,Apache 2.0
+NVIDIA FastConformer-Transducer,NVIDIA (NeMo),Open Source,Faster Conformer variant — optimized streaming,FastConformer-RNNT,Yes,Yes (native),Yes,~114M,PyTorch ROCm (NeMo),Yes — same caveats as Conformer,English + multilingual,Apache 2.0
+NVIDIA Parakeet-RNNT (1.1B),NVIDIA (NeMo),Open Source,High-accuracy English streaming model — transducer architecture,FastConformer-Transducer,Yes,Yes (native),Yes,1100M,PyTorch ROCm (NeMo),Yes — same caveats as Conformer,English,CC-BY-4.0
+NVIDIA Parakeet-CTC (1.1B),NVIDIA (NeMo),Open Source,High-accuracy English batch model — CTC architecture,FastConformer-CTC,No,No,Yes,1100M,PyTorch ROCm (NeMo),Yes — same caveats as Conformer,English,CC-BY-4.0
+NVIDIA Canary-1B,NVIDIA (NeMo),Open Source,Multi-task encoder-decoder — transcription + translation,Multi-task encoder-decoder,No,No (export possible),Yes,1000M,PyTorch ROCm (NeMo),Yes — same caveats,English + multilingual,Apache 2.0
+WeNet,WeNet Community,Open Source,Unified streaming/non-streaming — single model both modes,Conformer U2 (CTC+Attention),Yes,Yes (native dual-mode),Yes,Varies (~80–120M),PyTorch ROCm / ONNX Runtime ROCm,Yes,"Chinese, English, multilingual",Apache 2.0
+Zipformer,k2-fsa / Icefall,Open Source,Next-gen Kaldi — excellent streaming WER,Zipformer-Transducer,Yes,Yes (native),Yes,~65M,PyTorch ROCm,Yes,English + multilingual,Apache 2.0
+SpeechBrain Transducer,SpeechBrain,Open Source,Research-grade streaming RNNT models,RNNT/Transducer,Yes,Yes (native),Yes,Varies,PyTorch ROCm,Yes,English + multilingual,Apache 2.0
+Wav2Letter++,Meta,Open Source,Fast C++ CTC inference — designed for real-time,CTC,Yes,Yes (native),Yes,~100M,CPU / custom (no ROCm),No (C++ custom runtime),English,BSD
+Wav2Vec 2.0,Meta,Open Source,Self-supervised pretrained + CTC fine-tuned — research standard,CTC (fine-tuned),No,No,Yes,315M (base) / 1000M (large),PyTorch ROCm,Yes,Multilingual,MIT
+HuBERT,Meta,Open Source,Self-supervised like Wav2Vec2 — research-oriented,CTC (fine-tuned),No,No,Yes,316M (base) / 964M (large),PyTorch ROCm,Yes,English + multilingual,MIT
+MMS,Meta,Open Source,Massive multilingual — 1100+ languages,CTC / Wav2Vec2,No,No,Yes,1000M,PyTorch ROCm,Yes,1100+,CC-BY-NC-4.0
+SeamlessM4T v2,Meta,Open Source,Multimodal translation + transcription,Encoder-decoder,No,No,Yes,~2300M,PyTorch ROCm,Yes,100+,CC-BY-NC-4.0
+Qwen2-Audio,Alibaba,Open Source,Multimodal LLM with audio understanding,Multimodal LLM,No,No,Yes,~8000M,PyTorch ROCm,Yes,Multilingual,Apache 2.0
+Deepgram Nova-3,Deepgram,SaaS,Best-in-class streaming STT — purpose-built for real-time,Proprietary,Yes,Yes (WebSocket),Yes (pre-recorded API),Proprietary,N/A (cloud API),N/A,50+,Proprietary
+Deepgram Nova-2,Deepgram,SaaS,Previous-gen Deepgram — still excellent accuracy,Proprietary,Yes,Yes (WebSocket),Yes (pre-recorded API),Proprietary,N/A (cloud API),N/A,36+,Proprietary
+AssemblyAI Universal-2,AssemblyAI,SaaS,Feature-rich STT — diarization + summarization + sentiment,Proprietary,Yes (English),Yes (WebSocket),Yes,Proprietary,N/A (cloud API),N/A,20+,Proprietary
+Google Chirp 2,Google,SaaS,Latest Google STT — streaming + batch via gRPC,Proprietary,Yes,Yes (StreamingRecognize),Yes (LongRunningRecognize),Proprietary,N/A (cloud API),N/A,125+,Proprietary
+Azure Speech Service,Microsoft,SaaS,Mature enterprise STT — SDK-based streaming,Custom Neural / Whisper,Yes,Yes (SDK streaming),Yes (batch transcription),Proprietary,N/A (cloud API),N/A,100+,Proprietary
+AWS Transcribe,Amazon,SaaS,AWS streaming STT — WebSocket/HTTP2,Proprietary,Yes,Yes (WebSocket/HTTP2),Yes (async jobs),Proprietary,N/A (cloud API),N/A,100+,Proprietary
+Speechmatics Ursa 2,Speechmatics,SaaS,Strong multilingual real-time STT,Proprietary,Yes,Yes (WebSocket),Yes,Proprietary,N/A (cloud API),N/A,50+,Proprietary
+Rev AI,Rev,SaaS,Streaming STT from human transcription company,Proprietary,Yes,Yes (WebSocket),Yes,Proprietary,N/A (cloud API),N/A,Multilingual,Proprietary
+Picovoice Cheetah,Picovoice,SaaS/Edge,On-device streaming — ultra-low latency,Proprietary,Yes,Yes (native SDK),No (streaming only),Proprietary,N/A (on-device SDK),N/A,English,Proprietary
+Picovoice Leopard,Picovoice,SaaS/Edge,On-device batch transcription — companion to Cheetah,Proprietary,No,No,Yes,Proprietary,N/A (on-device SDK),N/A,English,Proprietary
+Gladia,Gladia,SaaS,Enhanced Whisper-based streaming — WebSocket API,Whisper-based + proprietary,Yes,Yes (WebSocket),Yes,Proprietary,N/A (cloud API),N/A,100+,Proprietary
+OpenAI Whisper API,OpenAI,SaaS,Hosted Whisper large-v2 — file upload only,Whisper large-v2,No,No,Yes (25MB limit),Proprietary,N/A (cloud API),N/A,57,Proprietary
