@@ -1,0 +1,1 @@
+if i wanted to run a benchmark comparing inference for stt models that dictate in real time and those that do it asynchronously (ie, upload audio file) ... can all models be used in these different contexts or does the model have to support it. and on this amd gpu machine would it need to be different inference engines?
