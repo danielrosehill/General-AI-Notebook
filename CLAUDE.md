@@ -10,6 +10,7 @@ This is a prompt execution workspace. Daniel places prompts (text files or audio
 prompts/
   to-run/       # Queue: place prompt files here to be executed
   run/           # Archive: prompts move here after execution
+  metadata.json  # Tracks all prompt executions with IDs and links
   audio.md       # Notes on audio prompt handling
 outputs/
   YYYY-MM-DD/   # Date-organized markdown outputs
@@ -23,7 +24,85 @@ templates/
 ## Prompt File Formats
 
 - **Text prompts**: `.txt` or `.md` files containing the prompt text
-- **Audio prompts**: `.mp3`, `.wav`, `.ogg`, `.m4a`, `.webm` files — transcribe first, then execute the transcribed prompt
+- **Audio prompts**: `.mp3`, `.wav`, `.ogg`, `.m4a`, `.webm` files — use the voice prompt workflow below
+
+## Voice Prompt Workflow
+
+Audio prompts follow a structured subfolder workflow:
+
+1. **Detect** the audio file in `prompts/to-run/`
+2. **Create a subfolder**: `prompts/to-run/YYYYMMDD-HHMMSS-<slug>/`
+3. **Move** the original audio file into the subfolder
+4. **Transcribe verbatim** — save as `verbatim.md` in the subfolder. This is the raw, unedited transcription including filler words, false starts, repetitions, etc.
+5. **Create cleaned version** — save as `cleaned.md` in the subfolder. Fix transcription errors, remove filler words, correct grammar, and produce a coherent prompt. This is what gets executed.
+6. **Execute** the cleaned prompt
+7. **Save output** to `outputs/YYYY-MM-DD/HHMMSS-<slug>.md` as usual
+8. **Record metadata** — add an entry to `prompts/metadata.json` (see Metadata Tracking below)
+9. **Move the entire subfolder** from `prompts/to-run/` to `prompts/run/`
+
+Subfolder structure after processing:
+```
+prompts/run/20260331-162000-research-stt-models/
+  recording.mp3          # Original audio file
+  verbatim.md            # Raw transcription
+  cleaned.md             # Cleaned prompt (what was executed)
+```
+
+## Metadata Tracking
+
+All prompt executions are logged in `prompts/metadata.json`. This tracks connections between prompts, transcriptions, and outputs with unique identifiers.
+
+**Schema:**
+```json
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "p-20260331-162000",
+      "type": "audio",
+      "slug": "research-stt-models",
+      "created": "2026-03-31T16:20:00+03:00",
+      "prompt_dir": "prompts/run/20260331-162000-research-stt-models/",
+      "audio_file": "prompts/run/20260331-162000-research-stt-models/recording.mp3",
+      "verbatim": "prompts/run/20260331-162000-research-stt-models/verbatim.md",
+      "cleaned": "prompts/run/20260331-162000-research-stt-models/cleaned.md",
+      "output": "outputs/2026-03-31/162000-research-stt-models.md",
+      "tables": [],
+      "pdfs": []
+    },
+    {
+      "id": "p-20260331-170000",
+      "type": "text",
+      "slug": "compare-llm-pricing",
+      "created": "2026-03-31T17:00:00+03:00",
+      "prompt_file": "prompts/run/20260331-170000-compare-llm-pricing.md",
+      "output": "outputs/2026-03-31/170000-compare-llm-pricing.md",
+      "tables": ["tables/llm-pricing.csv"],
+      "pdfs": []
+    },
+    {
+      "id": "p-20260331-180000",
+      "type": "inline",
+      "slug": "what-is-rag",
+      "created": "2026-03-31T18:00:00+03:00",
+      "prompt_file": "prompts/run/20260331-180000-what-is-rag.md",
+      "output": "outputs/2026-03-31/180000-what-is-rag.md",
+      "tables": [],
+      "pdfs": []
+    }
+  ]
+}
+```
+
+**Rules:**
+- **ID format**: `p-YYYYMMDD-HHMMSS` — unique per execution
+- **All prompt types** get an entry: audio, text, and inline
+- Audio entries include `audio_file`, `verbatim`, `cleaned`, and `prompt_dir` fields
+- Text/inline entries include `prompt_file` instead
+- `tables` and `pdfs` arrays track any generated artifacts
+- When `/generate-table` or `/generate-pdf` produces artifacts for an existing entry, update that entry's arrays
+- Create the file if it doesn't exist; append to `entries` if it does
+- All paths are relative to the repo root
 
 ## Slash Commands
 
@@ -31,10 +110,11 @@ templates/
 
 Run all prompts currently in `prompts/to-run/`. For each file:
 
-1. **Read/transcribe** the prompt (text files: read directly; audio files: transcribe the content)
-2. **Execute** the prompt — carry out whatever the prompt asks
+1. **Detect type**: audio files use the Voice Prompt Workflow (see above); text files proceed directly
+2. **Execute** the prompt (cleaned version for audio, file contents for text)
 3. **Save output** to `outputs/YYYY-MM-DD/HHMMSS-<slug>.md` where `<slug>` is a short kebab-case summary of the prompt (max 50 chars)
-4. **Move** the prompt file from `prompts/to-run/` to `prompts/run/`
+4. **Record metadata** — add entry to `prompts/metadata.json`
+5. **Move** the prompt (subfolder for audio, file for text) from `prompts/to-run/` to `prompts/run/`
 
 Output file format:
 ```markdown
@@ -143,7 +223,8 @@ If Daniel asks a question or gives a prompt directly on the command line (rather
 1. **Record the prompt** — save it as a `.md` file in `prompts/run/` named `YYYYMMDD-HHMMSS-<slug>.md` with the prompt text and timestamp
 2. **Research and execute** — carry out the prompt (research, generate content, etc.)
 3. **Save output** — write the result to `outputs/YYYY-MM-DD/HHMMSS-<slug>.md` using the standard output format, with `**Prompt source**: `inline (command line)`` instead of a filename
-4. **Commit and push**
+4. **Record metadata** — add entry to `prompts/metadata.json` with `type: "inline"`
+5. **Commit and push**
 
 No need to wait for confirmation — if it looks like a prompt/question, just run it.
 
@@ -152,7 +233,7 @@ No need to wait for confirmation — if it looks like a prompt/question, just ru
 - Always use Israel Standard Time (IST/IDT) for timestamps
 - Create date subdirectories in `outputs/` as needed (e.g., `outputs/2026-03-31/`)
 - If a prompt is ambiguous, do your best interpretation and note assumptions in the output
-- For audio files, include the transcription at the top of the output before the response
+- For audio files, follow the Voice Prompt Workflow. The output should reference the subfolder containing the verbatim and cleaned transcriptions.
 - If a prompt asks you to create files, create them AND save a summary output
 - Commit and push after running prompts
 - **Follow-up handling (common sense approach)**:
