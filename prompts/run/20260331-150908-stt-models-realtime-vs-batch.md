@@ -1,0 +1,1 @@
+In follow-up to my previous question, can you provide a list of models which are inherently designed for real-time as opposed to batch transcription, both open source and SaaS tools like Deepgram's Nova models?
