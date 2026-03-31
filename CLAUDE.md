@@ -11,7 +11,12 @@ prompts/
   to-run/       # Queue: place prompt files here to be executed
   run/           # Archive: prompts move here after execution
   audio.md       # Notes on audio prompt handling
-outputs/         # All prompt outputs saved here with timestamps
+outputs/
+  YYYY-MM-DD/   # Date-organized markdown outputs
+  raw/           # Raw markdown records of chat threads (for PDF generation)
+  pdf/           # Generated PDFs
+templates/
+  notebook.typ  # Typst template for PDF generation
 ```
 
 ## Prompt File Formats
@@ -54,6 +59,52 @@ List all pending prompts in `prompts/to-run/` with their filenames and a brief p
 
 List all saved outputs organized by date.
 
+### `/generate-pdf`
+
+Generate a PDF from one or more outputs using Typst. Accepts several argument forms:
+
+**Single output:**
+```
+/generate-pdf outputs/2026-03-31/150424-stt-benchmark-realtime-vs-async.md
+```
+
+**Multiple outputs (concatenated into one PDF):**
+```
+/generate-pdf outputs/2026-03-31/150424-stt-benchmark-realtime-vs-async.md outputs/2026-03-31/150908-stt-models-realtime-vs-batch.md
+```
+
+**By date (all outputs from a date):**
+```
+/generate-pdf 2026-03-31
+```
+
+**By glob pattern:**
+```
+/generate-pdf outputs/**/stt-*.md
+```
+
+**Process:**
+
+1. **Collect** the specified markdown file(s). If multiple, concatenate in the order given (or chronologically for date/glob), separated by page breaks.
+2. **Convert** markdown to Typst markup:
+   - Headings: `#` → `= `, `##` → `== `, etc.
+   - Bold/italic/code: translate to Typst equivalents
+   - Tables: convert to Typst `table()` calls
+   - Code blocks: wrap in `` `​`​`lang `` raw blocks
+   - Wiki-links `[[...]]`: render as plain text (strip brackets)
+   - Metadata block (prompt source, executed, related prompt): render as a styled info box
+3. **Write** the `.typ` source to `outputs/raw/<slug>.typ` (preserves the raw Typst source for manual editing)
+4. **Compile** with `typst compile` using the `templates/notebook.typ` template
+5. **Save** PDF to `outputs/pdf/<slug>.pdf`
+6. **Report** the path to the generated PDF
+
+**Naming:** The PDF slug is derived from the input:
+- Single file: same slug as the markdown file
+- Multiple files / date: `YYYY-MM-DD-combined` or a descriptive slug if a theme is obvious
+- User can override: `/generate-pdf --name "my-title" <files...>`
+
+**Template:** Uses `templates/notebook.typ` for consistent formatting (A4, serif, numbered pages, title page).
+
 ## Inline Prompts (Command Line Questions)
 
 If Daniel asks a question or gives a prompt directly on the command line (rather than via a file in `prompts/to-run/`), treat it as a prompt and run the full workflow automatically:
@@ -73,5 +124,8 @@ No need to wait for confirmation — if it looks like a prompt/question, just ru
 - For audio files, include the transcription at the top of the output before the response
 - If a prompt asks you to create files, create them AND save a summary output
 - Commit and push after running prompts
-- **Each prompt is its own thread** — even follow-up prompts get their own prompt file and output file. Outputs can reference prior context but are never appended to existing files.
+- **Follow-up handling (common sense approach)**:
+  - If a follow-up prompt is a natural continuation (new question building on prior context), record it as its own prompt + output pair. Outputs can reference prior context via wiki-links.
+  - If a follow-up is a correction to a previous response (e.g., pointing out an error), just edit the prior output in place and delete the correction prompt — no need for a separate file.
+  - Use judgement: the goal is a clean, useful vault, not rigid process.
 - **Clean up typos in prompts** — the prompt text saved to `prompts/run/` should have typos and transcription errors corrected. Daniel often types one-handed.

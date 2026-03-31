@@ -21,6 +21,7 @@ These use architectures (CTC, RNN-Transducer, Conformer-Transducer) that emit to
 | **DeepSpeech** (Mozilla) | CTC + RNN | English (community models for others) | Deprecated but still usable. True streaming. |
 | **NVIDIA Conformer-Transducer** (NeMo) | Conformer-Transducer (RNNT) | English, multilingual | State-of-the-art streaming accuracy. Requires NeMo toolkit. Models on HuggingFace. |
 | **NVIDIA FastConformer-Transducer** (NeMo) | FastConformer-RNNT | English, multilingual | Faster variant of above, optimized for streaming. |
+| **NVIDIA Parakeet-RNNT** (NeMo) | FastConformer-Transducer | English | Streaming-capable variant of Parakeet. High accuracy English model. Note: the Parakeet-CTC variant is batch-only — see batch section. |
 | **WeNet** | Conformer/U2 (unified streaming + non-streaming) | Chinese, English, multilingual | Can run in both modes natively. Strong CTC/attention hybrid. |
 | **Zipformer** (Icefall/k2) | Zipformer-Transducer | English, multilingual | Next-gen from the Kaldi team. Excellent streaming WER. |
 | **SpeechBrain Transducer** | RNNT/Transducer | English, multilingual | Research-grade streaming models via SpeechBrain toolkit. |
@@ -57,7 +58,7 @@ These use encoder-decoder architectures that process complete utterances or long
 | **Whisper.cpp** | GGML Whisper port | 99 languages | C++ port, runs on CPU/GPU. Batch, but has experimental real-time mode with chunking. |
 | **Distil-Whisper** (HuggingFace) | Distilled Whisper | English, multilingual | 6x faster, 49% smaller than Whisper Large-v3. Batch. |
 | **NVIDIA Canary** (NeMo) | Multi-task encoder-decoder | English, multilingual | High accuracy. Primarily batch. Can be exported for streaming with some work. |
-| **NVIDIA Parakeet** (NeMo) | CTC and RNNT variants | English | Parakeet-CTC is batch; Parakeet-RNNT can stream. Check variant. |
+| **NVIDIA Parakeet-CTC** (NeMo) | FastConformer-CTC | English | Batch-only variant. High accuracy English ASR. The RNNT variant is streaming-capable — see streaming section. |
 | **SeamlessM4T** (Meta) | Encoder-decoder, multimodal | 100+ languages | Translation + transcription. Batch-oriented. |
 | **MMS** (Meta) | CTC/Wav2Vec2 | 1100+ languages | Massive language coverage. CTC-based so technically could stream, but designed for batch. |
 | **Wav2Vec 2.0** (Meta) | CTC fine-tuned | Multilingual | Self-supervised pretraining + CTC head. Batch-focused. |
